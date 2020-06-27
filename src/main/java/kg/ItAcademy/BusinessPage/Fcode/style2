@@ -1,0 +1,5 @@
+.brutal:hover{
+    color: aqua;
+    transition: 3s;
+    transform: rotate(360deg)
+}

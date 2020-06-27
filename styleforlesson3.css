@@ -1,0 +1,36 @@
+﻿.person{
+
+    background: blue;
+    width: 300px;
+    height: 300px;
+    margin-bottom: 20px;
+}
+/* точка говорит о том что мы выбираем по классам */
+/* !important важный */
+
+.brutal span{
+    color:purple;
+    font-size: 10px;
+}
+
+.woman ,.god ,.chill{
+    color:purple;
+}
+.person.brutal:hover{
+    color: aqua;
+    transition: 3s;
+    transform: rotate(360deg)
+
+}
+.woman:hover {
+    background: url(1.jpg) no-repeat;
+    background-size: 100%;
+    box-shadow: 0 0 15px 7px black;
+}
+
+/* up-down left-right size blur color*/
+.person.chill:hover{
+    background-color: yellow;
+    transition: 2.0;
+    color: rgb(255, 255, 255);
+}
