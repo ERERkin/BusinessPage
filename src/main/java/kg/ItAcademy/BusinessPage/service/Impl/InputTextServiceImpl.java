@@ -40,6 +40,11 @@ public class InputTextServiceImpl implements InputTextService {
     @Override
     public List<InputText> getAllInputTextsByDivId(Long id) {
         Div div = divService.getById(id);
-        return inputTextRepo.findAllByDivText(div);
+        return inputTextRepo.getAllInputTextsByDivId(id);
+    }
+
+    @Override
+    public void deleteByDiv(Long divId, Integer type) {
+        inputTextRepo.deleteAllByDivId(divId);
     }
 }

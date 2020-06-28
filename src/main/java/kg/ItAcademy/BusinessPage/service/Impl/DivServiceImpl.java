@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public class DivServiceImpl implements DivService {
     @Override
     public Div getDivByPageIdAndType(Long id, Long pageId, String type) {
         Page page = pageService.getById(id);
-        List<Div> divs = divRepo.findAllByPage(page);
+        List<Div> divs = divRepo.getAllDivsByPageId(id);
         for(Div d : divs){
             if(!d.getType().equals("Body") && d.getType().equals(type)){
                 return d;
@@ -105,7 +106,7 @@ public class DivServiceImpl implements DivService {
 //                                .get("id")))
                 .id(pageId)
                 .build();
-        Div div;
+        Div div = null;
         String address = "";
         if(type == 1){
             address += "logo";
@@ -116,28 +117,38 @@ public class DivServiceImpl implements DivService {
         }else if(type == 4){
             address += "footer";
         }
-        if(hashMap.get("id") == null) {
+        List<Div> divs = divRepo.getAllDivsByPageId(pageId);
+        for(Div d : divs){
+            if(d.getType() == type) div = d;
+        }
+        if(div == null) {
             div = Div.builder()
                     .address(address)
                     .type(type)
                     .page(page)
+                    .style(hashMap.get("style").toString())
                     .build();
             div = divRepo.save(div);
         }else{
+            //System.out.println("HIIIIII");
             div = Div.builder()
-                    .id(new Long((Integer)hashMap.get("id")))
+                    .id(div.getId())
+                    .address(address)
+                    .type(type)
+                    .page(page)
+                    .style(hashMap.get("style").toString())
                     .build();
+            divRepo.save(div);
         }
+
+        inputTextService.deleteByDiv(div.getId(), type);
+        System.err.println(div.getId());
         for(Map.Entry<String, Object> m : hashMap.entrySet()){
+            if(m.getKey().equals("style")){
+                continue;
+            }
+            LinkedHashMap<String, Object> hashMapLogo = (LinkedHashMap<String, Object>)m.getValue();
             if(type == 2){
-                HashMap<String, Object> hashMapLogo = (HashMap<String, Object>)m;
-                inputTextService.save(
-                        InputText.builder()
-                                .divText(div)
-                                .inputName(m.getKey())
-                                .inputText(hashMapLogo.get("text").toString())
-                                .build()
-                );
                 inputTextService.save(
                         InputText.builder()
                                 .divText(div)
@@ -145,15 +156,14 @@ public class DivServiceImpl implements DivService {
                                 .inputText(hashMapLogo.get("href").toString())
                                 .build()
                 );
-            }else {
-                inputTextService.save(
-                        InputText.builder()
-                                .divText(div)
-                                .inputName(m.getKey())
-                                .inputText(m.getValue().toString())
-                                .build()
-                );
             }
+            inputTextService.save(
+                    InputText.builder()
+                            .divText(div)
+                            .inputName(m.getKey())
+                            .inputText(hashMapLogo.get("text").toString())
+                            .build()
+            );
         }
         return div;
     }
@@ -166,6 +176,6 @@ public class DivServiceImpl implements DivService {
     @Override
     public List<Div> getAllDivsByPageId(Long id) {
         Page page = pageService.getById(id);
-        return divRepo.findAllByPage(page);
+        return divRepo.getAllDivsByPageId(id);
     }
 }

@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "final_input_text2")
+@Table(name = "final_input_text")
 public class InputText {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

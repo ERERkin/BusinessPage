@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface InputTextService extends BaseService<InputText> {
     List<InputText> getAllInputTextsByDivId(Long id);
+
+    void deleteByDiv(Long divId, Integer type);
 }

@@ -1,0 +1,26 @@
+<div class="body ###class###">
+    <div class="body-cell">
+        <p class="p normal">
+            @@@input1@@@
+        </p>
+        <p class="p reverse">
+            @@@input2@@@
+        </p>
+    </div>
+    <div class="body-cell">
+        <p class="p reverse">
+            @@@input3@@@
+        </p>
+        <p class="p normal">
+            @@@input4@@@
+        </p>
+    </div>
+    <div class="body-cell">
+        <p class="p normal">
+            @@@input5@@@
+        </p>
+        <p class="p reverse">
+            @@@input6@@@
+        </p>
+    </div>
+</div>

@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "final_div2")
+@Table(name = "final_div")
 public class Div implements Comparable<Div>{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,7 +31,7 @@ public class Div implements Comparable<Div>{
     @JoinColumn(name = "page_id")
     Page page;
 
-    @Column(name = "address")
+    @Column(name = "style")
     String style;
 
     @Override

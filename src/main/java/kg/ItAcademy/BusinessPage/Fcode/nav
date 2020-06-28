@@ -1,0 +1,5 @@
+<nav class="nav ###class###">
+    <a href="@@@hrefinput1@@@">@@@input1@@@</a>
+    <a href="@@@hrefinput2@@@">@@@input2@@@</a>
+    <a href="@@@hrefinput3@@@">@@@input3@@@</a>
+</nav>

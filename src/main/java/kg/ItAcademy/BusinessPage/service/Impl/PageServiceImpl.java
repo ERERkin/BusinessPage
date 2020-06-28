@@ -26,12 +26,16 @@ public class PageServiceImpl implements PageService {
     DivService divService;
     @Autowired
     InputTextService inputTextService;
+    Boolean cheker = true;
 
-    String styleFiles[] = {"styleColor"};
+    String styleFiles[] = {"styleColor", "styleLayout", "styleSize"};
 
     @Override
     public Page getById(Long id) {
-        return pageRepo.findById(id).get();
+        System.out.println(id);
+        Page page = pageRepo.findById(id).orElse(new Page());
+        System.out.println(page);
+        return page;
     }
 
     @Override
@@ -97,14 +101,14 @@ public class PageServiceImpl implements PageService {
     }
 
     public String doPage(String pageName){
-        Page page = pageRepo.findAllByName(pageName).get(0);
+        Page page = pageRepo.getByName(pageName).get(0);
         //Page page = pageService.getById(pageId);
         List<Div> divs = divService.getAllDivsByPageId(page.getId());
         StringBuilder fullDivs = new StringBuilder();
         fullDivs.append(sh).append('\n');
         int f1 = sh.indexOf("TITLE");
         int f2 = f1 + 4;
-        fullDivs.append(getChange(fullDivs, f1, f2, page.getTitle()));
+        fullDivs = new StringBuilder(getChange(fullDivs, f1, f2, page.getTitle()));
         fullDivs.append(getStyles(divs));
 //        fullDivs += readS("style1") + '\n';
         fullDivs.append(sc).append('\n');
@@ -122,7 +126,15 @@ public class PageServiceImpl implements PageService {
         fullDivs.append(se);
 //        String htmlAddress = writeS(page.getName(), fullDivs);
 //        pdfConvert(page.getName());
-        return fullDivs.toString();
+        String ans = fullDivs.toString();
+        Integer border = ans.indexOf("</style>");
+        String ans1 = ans.substring(0,border);
+        String ans2 = ans.substring(border);
+        ans2 = ans2.replace("normal" , "llllllllll");
+        ans2 = ans2.replace("reverse", "normal");
+        ans2 = ans2.replace("llllllllll", "reverse");
+        ans = ans1 + ans2;
+        return ans;
     }
 
     public String getStyles(List<Div> divs){
@@ -149,6 +161,7 @@ public class PageServiceImpl implements PageService {
     }
 
     public StringBuilder getInputs(Div div){
+        StringBuilder ans = new StringBuilder();
         List<InputText> inputTexts = inputTextService.getAllInputTextsByDivId(div.getId());
         StringBuilder divBody = new StringBuilder();
         divBody.append(readS(div.getAddress()));
@@ -160,14 +173,24 @@ public class PageServiceImpl implements PageService {
         input1.append("###class###");
         int f2 = divBody2.lastIndexOf(input1.reverse().toString());
         f2 = divBody.length() - f2 - 1;
-        divBody.append(getChange(divBody, f1, f2, div.getStyle()));
+        //ans.append(getChange(divBody, f1, f2, div.getStyle()));
+        String[] styles = div.getStyle().split(" ");
+        String style = "";
+        for(String s : styles){
+            if(!s.equals("normal") && !s.equals("reverse")){
+                style += s + " ";
+            }else if(s.equals("reverse")){
+                cheker = false;
+            }
+        }
+        divBody = new StringBuilder(getChange(divBody, f1, f2, style));
         for(InputText it : inputTexts){
             f1 = divBody.indexOf("@@@" + it.getInputName() + "@@@");
             input1 = new StringBuilder();
             input1.append(it.getInputName());
             f2 = divBody2.lastIndexOf("@@@" + input1.reverse().toString() + "@@@");
             f2 = divBody.length() - f2 - 1;
-            divBody.append(getChange(divBody, f1, f2, it.getInputText()));
+            divBody = new StringBuilder(getChange(divBody, f1, f2, it.getInputText()));
 //            f1 = divBody.indexOf("###" + it.getStyle() + "###");
 //            input1 = new StringBuilder();
 //            input1.append(it.getStyle());
@@ -212,7 +235,7 @@ public class PageServiceImpl implements PageService {
             "          content=\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0\">\n" +
             "    <meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\">\n" +
             "    <link href=\"https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800&display=swap\" rel=\"stylesheet\">\n" +
-            "    <title>card</title>\n" +
+            "    <title>TITLE</title>\n" +
             "    <style>\n" +
             "        body {\n" +
             "            min-height: 100vh;\n" +
@@ -228,7 +251,23 @@ public class PageServiceImpl implements PageService {
             "            color: inherit;\n" +
             "            margin: 0 10px;\n" +
             "        }";
-    static String sc =  ".mainCont{\n" +
+    static String sc =  ".normal{\n" +
+            "            width: 38%;\n" +
+            "            background: #444444;\n" +
+            "            display: flex;\n" +
+            "            align-items: center;\n" +
+            "            justify-content: center;\n" +
+            "        }\n" +
+            "\n" +
+            "        .reverse{\n" +
+            "            width: 59%;\n" +
+            "            background: #fdffff;\n" +
+            "            border: 2px solid #444444;\n" +
+            "            display: flex;\n" +
+            "            align-items: center;\n" +
+            "            justify-content: center;\n" +
+            "        }" +
+            ".mainCont{\n" +
             "            height: 600px;\n" +
             "            width: 1000px;\n" +
             "            display: flex;\n" +

@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "final_page2")
+@Table(name = "final_page")
 public class Page {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
