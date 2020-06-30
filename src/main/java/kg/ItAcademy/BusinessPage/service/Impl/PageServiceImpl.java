@@ -2,11 +2,13 @@ package kg.ItAcademy.BusinessPage.service.Impl;
 
 import kg.ItAcademy.BusinessPage.entity.Div;
 import kg.ItAcademy.BusinessPage.entity.InputText;
+import kg.ItAcademy.BusinessPage.entity.Log;
 import kg.ItAcademy.BusinessPage.entity.Page;
 import kg.ItAcademy.BusinessPage.model.PageModel;
 import kg.ItAcademy.BusinessPage.repos.PageRepo;
 import kg.ItAcademy.BusinessPage.service.DivService;
 import kg.ItAcademy.BusinessPage.service.InputTextService;
+import kg.ItAcademy.BusinessPage.service.LogService;
 import kg.ItAcademy.BusinessPage.service.PageService;
 //import kg.ItAcademy.BusinessPage.Trash.StyleClassService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.FileReader;
 import java.io.IOException;
+//import java.sql.Date;
 import java.util.*;
 
 import static java.util.Collections.sort;
@@ -26,6 +29,8 @@ public class PageServiceImpl implements PageService {
     DivService divService;
     @Autowired
     InputTextService inputTextService;
+    @Autowired
+    LogService logService;
     Boolean cheker = true;
 
     String styleFiles[] = {"styleColor", "styleLayout", "styleSize"};
@@ -96,7 +101,11 @@ public class PageServiceImpl implements PageService {
     }
 
     public String doPage(String pageName){
-        Page page = pageRepo.getByName(pageName).get(0);
+        Page page = new Page();
+        for(Page p : pageRepo.getByName(pageName)){
+            page = p;
+        }
+        logService.logAdd(new Date(), page);
         //Page page = pageService.getById(pageId);
         List<Div> divs = divService.getAllDivsByPageId(page.getId());
         StringBuilder fullDivs = new StringBuilder();
