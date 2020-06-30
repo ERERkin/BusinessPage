@@ -100,6 +100,13 @@ public class DivServiceImpl implements DivService {
     @Override
     public Div saveDiv(Object object, Integer type, Long pageId) {
         HashMap<String, Object> hashMap = (HashMap<String, Object>)object;
+        String address = "";
+        Object oDiv = new Object();
+        for(Map.Entry<String, Object> me : hashMap.entrySet()){
+            address = me.getKey();
+            oDiv = me.getValue();
+        }
+        HashMap<String, Object> hashMapText = (HashMap<String, Object>)oDiv;
         Page page = Page.builder()
 //                .id(new Long((Integer)
 //                        ((HashMap<String, Object>)hashMap.get("page"))
@@ -107,61 +114,24 @@ public class DivServiceImpl implements DivService {
                 .id(pageId)
                 .build();
         Div div = null;
-        String address = "";
-        if(type == 1){
-            address += "logo";
-        }else if(type == 2){
-            address += "nav";
-        }else if(type == 3){
-            address += "body";
-        }else if(type == 4){
-            address += "footer";
-        }
         List<Div> divs = divRepo.getAllDivsByPageId(pageId);
-        for(Div d : divs){
-            if(d.getType() == type) div = d;
-        }
-        if(div == null) {
-            div = Div.builder()
-                    .address(address)
-                    .type(type)
-                    .page(page)
-                    .style(hashMap.get("style").toString())
-                    .build();
-            div = divRepo.save(div);
-        }else{
-            //System.out.println("HIIIIII");
-            div = Div.builder()
-                    .id(div.getId())
-                    .address(address)
-                    .type(type)
-                    .page(page)
-                    .style(hashMap.get("style").toString())
-                    .build();
-            divRepo.save(div);
-        }
+
+        div = Div.builder()
+                .address(address)
+                .type(type)
+                .page(page)
+                .build();
+        div = divRepo.save(div);
+
 
         inputTextService.deleteByDiv(div.getId(), type);
         System.err.println(div.getId());
-        for(Map.Entry<String, Object> m : hashMap.entrySet()){
-            if(m.getKey().equals("style")){
-                continue;
-            }
-            LinkedHashMap<String, Object> hashMapLogo = (LinkedHashMap<String, Object>)m.getValue();
-            if(type == 2){
-                inputTextService.save(
-                        InputText.builder()
-                                .divText(div)
-                                .inputName("href" + m.getKey())
-                                .inputText(hashMapLogo.get("href").toString())
-                                .build()
-                );
-            }
+        for(Map.Entry<String, Object> m : hashMapText.entrySet()){
             inputTextService.save(
                     InputText.builder()
                             .divText(div)
                             .inputName(m.getKey())
-                            .inputText(hashMapLogo.get("text").toString())
+                            .inputText(m.getValue().toString())
                             .build()
             );
         }

@@ -1,0 +1,19 @@
+<div class="container bg-info">
+  <div class="row">
+    <div class="col-sm-3">
+      <h3>@@@inputHead1@@@</h3>
+      <p>@@@inputText1@@@</p>
+      <p>@@@inputText2@@@</p>
+    </div>
+    <div class="col-sm-4">
+      <h3>@@@inputHead2@@@</h3>
+      <p>@@@inputText3@@@</p>
+      <p>@@@inputText4@@@</p>
+    </div>
+    <div class="col-sm-4">
+      <h3>@@@inputHead3@@@</h3>
+      <p>@@@inputText5@@@</p>
+      <p>@@@inputText6@@@</p>
+    </div>
+  </div>
+</div>

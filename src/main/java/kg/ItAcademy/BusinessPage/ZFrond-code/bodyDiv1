@@ -1,0 +1,20 @@
+<div class="container-fluid bg-primary">
+  <div class="row">
+    <div class="col-md-3 col-xs-6">
+      <img src="@@@inputImg1@@@" class="img-rounded" alt="Cinque Terre" width="304" height="236">
+    </div>
+    <div class="col-md-9 col-xs-6 bg-dark">
+      <h3>@@@inputHead1@@@</h3>
+      <p>@@@inputText1@@@</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-9 col-xs-6">
+      <h3>@@@inputHead2@@@</h3>
+      <p>@@@inputText2@@@</p>
+    </div>
+
+    <div class="col-md-3 col-xs-6">
+      <img src="@@@inputImg2@@@" class="img-rounded" alt="Cinque Terre" width="304" height="236">
+    </div>
+</div>

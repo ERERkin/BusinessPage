@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "final_page")
+@Table(name = "final_page_d")
 public class Page {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,6 +30,9 @@ public class Page {
 
     @Column(name = "photo")
     String photo;
+
+    @Column(name = "address")
+    String address;
 
 //    @OneToMany(mappedBy = "page", fetch = FetchType.EAGER)
 //    @Fetch(value = FetchMode.SUBSELECT)

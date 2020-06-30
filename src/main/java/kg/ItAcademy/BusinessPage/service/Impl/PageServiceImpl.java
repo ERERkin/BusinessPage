@@ -69,27 +69,22 @@ public class PageServiceImpl implements PageService {
     public String updatePage(Object o, Long id) {
         Page page = getById(id);
         HashMap<String, Object> hashMap = (HashMap<String, Object>)o;
-        Object sendObject = hashMap.get("sendingObj");
-        HashMap<String, Object> hashMapSendObject = (HashMap<String, Object>)sendObject;
-        Object allObject = hashMapSendObject.get("all");
-        HashMap<String, Object> hashMapAllObject = (HashMap<String, Object>)allObject;
-        for(Map.Entry<String, Object> me : hashMapAllObject.entrySet()){
+        for(Map.Entry<String, Object> me : hashMap.entrySet()){
             //System.out.println(me);
-            if(me.getKey().equals("logo")){
+            if(me.getKey().equals("header")){
                 //System.out.println(me);
                 divService.saveDiv(me.getValue(), 1, id);
             }
-            if(me.getKey().equals("nav")){
-                //System.out.println(me);
-                divService.saveDiv(me.getValue(), 2, id);
-            }
             if(me.getKey().equals("body")){
                 //System.out.println(me);
-                divService.saveDiv(me.getValue(), 3, id);
+                ArrayList<Object> hashMapBody = (ArrayList<Object>)me.getValue();
+                for(Object div : hashMapBody){
+                    divService.saveDiv(div, 2, id);
+                }
             }
             if(me.getKey().equals("footer")){
                 //System.out.println(me);
-                divService.saveDiv(me.getValue(), 4, id);
+                divService.saveDiv(me.getValue(), 3, id);
             }
         }
         return page.getName();
@@ -109,10 +104,7 @@ public class PageServiceImpl implements PageService {
         int f1 = sh.indexOf("TITLE");
         int f2 = f1 + 4;
         fullDivs = new StringBuilder(getChange(fullDivs, f1, f2, page.getTitle()));
-        fullDivs.append(getStyles(divs));
 //        fullDivs += readS("style1") + '\n';
-        fullDivs.append(sc).append('\n');
-        System.out.println(fullDivs);
         sort(divs);
         for(Div div : divs){
             if(div.getType() == 1){
@@ -127,36 +119,6 @@ public class PageServiceImpl implements PageService {
 //        String htmlAddress = writeS(page.getName(), fullDivs);
 //        pdfConvert(page.getName());
         String ans = fullDivs.toString();
-        Integer border = ans.indexOf("</style>");
-        String ans1 = ans.substring(0,border);
-        String ans2 = ans.substring(border);
-        ans2 = ans2.replace("normal" , "llllllllll");
-        ans2 = ans2.replace("reverse", "normal");
-        ans2 = ans2.replace("llllllllll", "reverse");
-        ans = ans1 + ans2;
-        return ans;
-    }
-
-    public String getStyles(List<Div> divs){
-        StringBuilder s = new StringBuilder();
-        for(String styleClass : styleFiles){
-            s.append(readS(styleClass)).append(" \n");
-        }
-        Set<String> hashSet = new HashSet<>();
-        for(Div div : divs) {
-            String[] styles = div.getStyle().split(" ");
-            for(String style : styles){
-                int i1 = s.indexOf("." + style);
-                if(i1 < 0) continue;
-                String subS = s.substring(i1);
-                int i2 = subS.indexOf('}') + 1;
-                hashSet.add(subS.substring(0,i2));
-            }
-        }
-        String ans = "";
-        for(String s1 : hashSet){
-            ans += s1 + '\n';
-        }
         return ans;
     }
 
@@ -168,28 +130,21 @@ public class PageServiceImpl implements PageService {
         StringBuilder input1 = new StringBuilder();
         input1.append(divBody);
         String divBody2 = input1.reverse().toString();
-        int f1 = divBody.indexOf("###class###");
-        input1 = new StringBuilder();
-        input1.append("###class###");
-        int f2 = divBody2.lastIndexOf(input1.reverse().toString());
-        f2 = divBody.length() - f2 - 1;
-        //ans.append(getChange(divBody, f1, f2, div.getStyle()));
-        String[] styles = div.getStyle().split(" ");
-        String style = "";
-        for(String s : styles){
-            if(!s.equals("normal") && !s.equals("reverse")){
-                style += s + " ";
-            }else if(s.equals("reverse")){
-                cheker = false;
-            }
-        }
-        divBody = new StringBuilder(getChange(divBody, f1, f2, style));
+        int f1;
+        int f2;
         for(InputText it : inputTexts){
             f1 = divBody.indexOf("@@@" + it.getInputName() + "@@@");
-            input1 = new StringBuilder();
-            input1.append(it.getInputName());
-            f2 = divBody2.lastIndexOf("@@@" + input1.reverse().toString() + "@@@");
-            f2 = divBody.length() - f2 - 1;
+//            input1 = new StringBuilder();
+//            input1.append(it.getInputName());
+//            f2 = divBody2.lastIndexOf("@@@" + input1.reverse().toString() + "@@@");
+//            f2 = divBody.length() - f2 - 1;
+            String w = divBody.toString().substring(f1);
+            Integer k1 = w.indexOf("\"");
+            Integer k2 = w.indexOf("<");
+            if(k1 < 0) k1 = f1 + 100000;
+            if(k2 < 0) k2 = f1 + 100000;
+            f2 = Math.min(k1,k2) + f1 - 1;
+            String s = "" + f1 + " " + f2 + " " + it.getInputName();
             divBody = new StringBuilder(getChange(divBody, f1, f2, it.getInputText()));
 //            f1 = divBody.indexOf("###" + it.getStyle() + "###");
 //            input1 = new StringBuilder();
@@ -213,7 +168,7 @@ public class PageServiceImpl implements PageService {
         String ans = "";
         try(FileReader reader = new FileReader("C:\\Users\\User\\" +
                 "IdeaProjects\\BusinessPage\\src\\main" +
-                "\\java\\kg\\ItAcademy\\BusinessPage\\Fcode\\" + s))
+                "\\java\\kg\\ItAcademy\\BusinessPage\\ZFrond-code\\" + s))
         {
             // читаем посимвольно
             int c;
@@ -230,116 +185,14 @@ public class PageServiceImpl implements PageService {
     static String sh = "<!DOCTYPE html>\n" +
             "<html lang=\"en\">\n" +
             "<head>\n" +
-            "    <meta charset=\"UTF-8\">\n" +
-            "    <meta name=\"viewport\"\n" +
-            "          content=\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0\">\n" +
-            "    <meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\">\n" +
-            "    <link href=\"https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800&display=swap\" rel=\"stylesheet\">\n" +
-            "    <title>TITLE</title>\n" +
-            "    <style>\n" +
-            "        body {\n" +
-            "            min-height: 100vh;\n" +
-            "            margin: 0;\n" +
-            "            display: flex;\n" +
-            "            align-items: center;\n" +
-            "            justify-content: center;\n" +
-            "            font-family: 'Montserrat', sans-serif;\n" +
-            "        }\n" +
-            "        a{/*это ко всем ссылкам по умолчанию указываю стиль, чтобы он синим не горел*/\n" +
-            "            text-decoration: none;\n" +
-            "            outline: none;\n" +
-            "            color: inherit;\n" +
-            "            margin: 0 10px;\n" +
-            "        }";
-    static String sc =  ".normal{\n" +
-            "            width: 38%;\n" +
-            "            background: #444444;\n" +
-            "            display: flex;\n" +
-            "            align-items: center;\n" +
-            "            justify-content: center;\n" +
-            "        }\n" +
-            "\n" +
-            "        .reverse{\n" +
-            "            width: 59%;\n" +
-            "            background: #fdffff;\n" +
-            "            border: 2px solid #444444;\n" +
-            "            display: flex;\n" +
-            "            align-items: center;\n" +
-            "            justify-content: center;\n" +
-            "        }" +
-            ".mainCont{\n" +
-            "            height: 600px;\n" +
-            "            width: 1000px;\n" +
-            "            display: flex;\n" +
-            "            flex-direction: column;\n" +
-            "            justify-content: space-between;\n" +
-            "        }\n" +
-            "        .header{\n" +
-            "            display: flex;\n" +
-            "            justify-content: space-between;\n" +
-            "        }\n" +
-            "        .nav{\n" +
-            "            display: flex;\n" +
-            "            align-items: center;\n" +
-            "        }\n" +
-            "        .body-cell{\n" +
-            "            height: 100px;\n" +
-            "            display: flex;\n" +
-            "            justify-content: space-between;\n" +
-            "        }\n" +
-            "        .p{\n" +
-            "            padding: 5px;\n" +
-            "        }\n" +
-            "        .footer{\n" +
-            "            display: flex;\n" +
-            "            justify-content: space-between;\n" +
-            "        }\n" +
-            "\n" +
-            "        @media (max-width: 1076px) {\n" +
-            "            body{\n" +
-            "                padding: 20px 50px;\n" +
-            "            }\n" +
-            "        }\n" +
-            "        @media (max-width: 756px) {\n" +
-            "            body{\n" +
-            "                padding: 10px 20px;\n" +
-            "            }\n" +
-            "            .small{\n" +
-            "                font-size: 16px;\n" +
-            "            }\n" +
-            "\n" +
-            "            .medium{\n" +
-            "                font-size: 18px;\n" +
-            "            }\n" +
-            "\n" +
-            "            .large{\n" +
-            "                font-size: 24px;\n" +
-            "            }\n" +
-            "            a{\n" +
-            "                margin: 0 3px;\n" +
-            "            }\n" +
-            "        }\n" +
-            "        @media (max-width: 568px) {\n" +
-            "            body{\n" +
-            "                padding: 0 20px;\n" +
-            "            }\n" +
-            "            .small{\n" +
-            "                font-size: 12px;\n" +
-            "            }\n" +
-            "\n" +
-            "            .medium{\n" +
-            "                font-size: 16px;\n" +
-            "            }\n" +
-            "\n" +
-            "            .large{\n" +
-            "                font-size: 22px;\n" +
-            "            }\n" +
-            "        }\n" +
-            "    </style>\n" +
+            "  <title>TITLE</title>\n" +
+            "  <meta charset=\"utf-8\">\n" +
+            "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n" +
+            "  <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css\">\n" +
+            "  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js\"></script>\n" +
+            "  <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js\"></script>\n" +
             "</head>\n" +
-            "<body>\n" +
-            "    <div class=\"mainCont\">";
-    static String se = "</div>\n" +
-            "</body>\n" +
+            "<body>";
+    static String se = "</body>\n" +
             "</html>";
 }

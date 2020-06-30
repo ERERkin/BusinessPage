@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "final_div")
+@Table(name = "final_div_d")
 public class Div implements Comparable<Div>{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
