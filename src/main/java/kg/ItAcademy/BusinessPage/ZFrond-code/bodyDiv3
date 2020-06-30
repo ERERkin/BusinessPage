@@ -19,13 +19,13 @@
 
       <div class="item">
         <img src="@@@inputImg2@@@" style="width:100%;">
-        <h3>@@@inputHead1@@@</h3>
+        <h3>@@@inputHead2@@@</h3>
         <p>@@@inputText2@@@</p>
       </div>
 
       <div class="item">
         <img src="@@@inputImg3@@@" style="width:100%;">
-        <h3>@@@inputHead1@@@</h3>
+        <h3>@@@inputHead3@@@</h3>
         <p>@@@inputText3@@@</p>
       </div>
     </div>

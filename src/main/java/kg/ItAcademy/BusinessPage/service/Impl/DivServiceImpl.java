@@ -115,14 +115,26 @@ public class DivServiceImpl implements DivService {
                 .build();
         Div div = null;
         List<Div> divs = divRepo.getAllDivsByPageId(pageId);
-
-        div = Div.builder()
-                .address(address)
-                .type(type)
-                .page(page)
-                .build();
+        for(Div d : divs){
+            if(d.getType() == type && d.getAddress() == address){
+                div = d;
+            }
+        }
+        if(div == null) {
+            div = Div.builder()
+                    .address(address)
+                    .type(type)
+                    .page(page)
+                    .build();
+        }else{
+            div = Div.builder()
+                    .id(div.getId())
+                    .address(address)
+                    .type(type)
+                    .page(page)
+                    .build();
+        }
         div = divRepo.save(div);
-
 
         inputTextService.deleteByDiv(div.getId(), type);
         System.err.println(div.getId());
