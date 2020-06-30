@@ -1,4 +1,4 @@
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-@@@inputStyle1@@@">
   <div class="container-fluid">
     <div class="row">
     	<div class="col-md-2 col-xs-0">
